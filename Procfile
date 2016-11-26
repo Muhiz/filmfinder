@@ -1,1 +1,1 @@
-web: python backend/filmfinder.py runserver
+web: python backend/filmfinder.py
