@@ -1,5 +1,5 @@
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from xml.etree import ElementTree
 
 app = Flask(__name__)
@@ -77,6 +77,11 @@ def get_show(theatre_id, show_id):
     query = {'t' : 'Luokkakokous 2', 'y' : 'plot', 'r' : 'json'}
     r = requests.get( "http://www.omdbapi.com/", params=query)
     return r.text
+
+
+@app.errorhandler(404)
+def not_found(_):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 if __name__ == '__main__':
