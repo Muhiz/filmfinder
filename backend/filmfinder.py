@@ -20,6 +20,28 @@ class Theatre:
             'city': self.city
         }
 
+# Movie title, Genres, Description, Runtime, Show starts, IMDb rating
+class Show:
+    def __init__(self, show_id, title, genre, description, length, starttime, rating):
+        self.show_id = show_id
+        self.title = title
+        self.genre = genre
+        self.description = description
+        self.length = length
+        self.starttime = starttime
+        self.rating = rating
+
+    def serialize(self):
+        return {
+            'id': self.show_id,
+            'title': self.title,
+            'genre': self.genre,
+            'description': self.description,
+            'runtime': self.length,
+            'start_time': self.starttime,
+            'rating': self.rating
+        }
+
 
 @app.route('/api/cities', methods=['GET'])
 def get_cities():
@@ -44,7 +66,7 @@ def get_cities():
 # returns Theatre -list.
 @app.route('/api/theatres', methods=['GET'])
 def get_theatres():
-    response = requests.get("http://www.finnkino.fi/xml/TheatreAreas/",  timeout=1.000)
+    response = requests.get("http://www.finnkino.fi/xml/TheatreAreas/", timeout=1.000)
 
     root = ElementTree.fromstring(response.content)
 
@@ -66,16 +88,36 @@ def get_theatres():
 # Movie title, Genres, Description, Runtime, Show starts, IMDb rating
 @app.route('/api/theatres/<int:theatre_id>/shows', methods=['GET'])
 def get_shows(theatre_id):
-    # Check if date arg exists, if it's date or "today"
-    date_arg = request.args['date']
-    print(request.args)
-    return date_arg
+    # date_arg = request.args['date']
+    query = {'area': theatre_id}  #, 'dt': date_arg}
+    response = requests.get("http://www.finnkino.fi/xml/Schedule/", params=query, timeout=1.000)
+
+    root = ElementTree.fromstring(response.content)
+
+    shows = []
+
+    for show in root.findall('Shows/Show'):
+        show_id = int(show.find('EventID').text)
+        title = show.find('Title').text
+        genres = show.find('Genres').text
+        startutc = show.find('dttmShowStartUTC').text
+        length = int(show.find('LengthInMinutes').text)
+        shows.append(Show(show_id, title, genres, "", length, startutc, 0))
+
+    return jsonify({'shows': [s.serialize() for s in shows]})
 
 
 # Movie title, Genres, Description, Runtime, Show starts, IMDb rating, Free seats
 @app.route('/api/theatres/<int:theatre_id>/shows/<int:show_id>', methods=['GET'])
-def get_show(theatre_id, show_id):
-    query = {'t' : 'Luokkakokous 2', 'y' : 'plot', 'r' : 'json'}
+def get_show_in(theatre_id, show_id):
+    query = {'t' : 'Luokkakokous 2', 'y': 'plot', 'r': 'json'}
+    r = requests.get("http://www.omdbapi.com/", params=query)
+    return r.text
+
+
+@app.route('/api/theatres/shows/<int:show_id>', methods=['GET'])
+def get_show(show_id):
+    query = {'t' : 'Luokkakokous 2', 'y': 'plot', 'r': 'json'}
     r = requests.get( "http://www.omdbapi.com/", params=query)
     return r.text
 
