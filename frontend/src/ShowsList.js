@@ -8,7 +8,6 @@ class ShowsList extends React.Component {
         super(props);
         this.state = {
             search: '',
-            shows: props.shows
         }
     }
 
@@ -21,9 +20,9 @@ class ShowsList extends React.Component {
         // Filter shows by searched keywords
         // TODO: Search for genres etc.
 
-        let filteredShows = this.state.shows.filter(
+        let filteredShows = this.props.shows.filter(
             (show) => {
-                return show.name.toLowerCase().indexOf( this.state.search.toLowerCase() ) >= 0;
+                return show.title.toLowerCase().indexOf( this.state.search.toLowerCase() ) >= 0;
             }
         );
         return (
@@ -32,7 +31,7 @@ class ShowsList extends React.Component {
 
                 <div>
                     {filteredShows.map((show) => {
-                        return <Show show={show} key={show.id} />
+                        return <Show show={show} key={Math.random()} />
                     })}
                 </div>
             </div>
