@@ -3,7 +3,6 @@ import {render} from 'react-dom';
 import axios from 'axios';
 
 import ShowsList from './ShowsList.js';
-import TheatreSelector from './TheatreSelector';
 
 
 let apiBase = 'https://filmfinder-api.herokuapp.com/api';
@@ -42,7 +41,6 @@ class App extends React.Component {
         // We need to bind to this
         this.handleTheatreChange = this.handleTheatreChange.bind(this);
 
-
     }
 
     componentDidMount(){
@@ -69,13 +67,10 @@ class App extends React.Component {
                 });
             });
         }
-
-
     }
 
     handleTheatreChange(event){
         
-
         this.setState({currentTheatre: event.target.value});
         // Fetch shows
 
