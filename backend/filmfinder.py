@@ -1,9 +1,11 @@
 import os
 import requests
 from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS, cross_origin
 from xml.etree import ElementTree
 
 app = Flask(__name__)
+CORS(app)
 
 
 class Theatre:
@@ -19,6 +21,7 @@ class Theatre:
             'name': self.name,
             'city': self.city
         }
+
 
 # Movie title, Genres, Description, Runtime, Show starts, IMDb rating
 class Show:
