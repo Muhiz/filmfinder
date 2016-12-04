@@ -7,6 +7,7 @@
 
 // Include Google Fonts here
 @import url('https://fonts.googleapis.com/css?family=Lobster|Source+Sans+Pro:400,700');
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 
 html {
     font-size: 1em;
@@ -82,12 +83,81 @@ input{
 
 
 .show-container{
+
+
+
     border:1px solid #d4d4d4;
     margin-bottom:.5em;
-    padding:0 .5em .25em;
+    //padding:0 .5em .25em;
     background-color:#fff;
+
+
+    .show-title{
+        background-color:#F98013;
+        color:#fff;
+
+        padding:.25em .5em;
+
+        h3{
+            margin:0;
+            padding:0;
+        }
+    }
+    .show-details{
+        padding:.5em .25em;
+    }
+
+    .show-poster{
+
+         @media screen and (min-width: 641px) {
+            float:left;
+            margin-right:.5em;
+        }
+        max-width:200px;
+        max-height:200px;
+    }
+
 }
 
 .show-container:hover{
     background-color:#fff;
+}
+
+
+
+.clear{
+    clear:both;
+}
+
+.icon{
+    color:#fff;
+    background: #17c;
+    padding:.25em;
+    border-radius:50%;
+    line-hegiht:1;
+    display:inline-block;
+    font-size:2em;
+    height:1em;
+    width:1em;
+    text-align:center;
+    margin-right:.25em;
+}
+
+.show-time{
+    fon-weight:600;
+    font-size:1.25em;
+}
+
+a.btn{
+    margin-top:.5em;
+    display:inline-block;
+    background-color:#2a2;
+    color:#fff;
+    border-radius: 3px;
+    padding:.5em .8em;
+    text-decoration:none;
+    font-weight:600;
+}
+a.btn:hover{
+    background-color: darken(#2a2, 10%);
 }

@@ -8,17 +8,8 @@ import ShowsList from './ShowsList.js';
 let apiBase = 'https://filmfinder-api.herokuapp.com/api';
 
 
-let theatres = [
-    {
-        id: 0,
-        name: 'Loading...',
-        city:''
-    }
-];
-
-let shows = [
-
-];
+let theatres = [];
+let shows = [];
 
 
 class App extends React.Component {
@@ -40,21 +31,11 @@ class App extends React.Component {
 
         // We need to bind to this
         this.handleTheatreChange = this.handleTheatreChange.bind(this);
-
+        this.setClosestTheatre = this.setClosestTheatre.bind(this);
+        //this.loadTheatres = this.loadTheatres.bind(this);
     }
 
     componentDidMount(){
-
-        let that = this;
-        // Fetch theatres
-        axios.get(apiBase+'/theatres').then((response) => {
-    
-            that.setState({theatres: response.data.theatres});
-
-        }).catch((error) => {
-            console.log(error);
-        });
-
 
         // Ask for user location
         if(navigator.geolocation){
@@ -67,6 +48,20 @@ class App extends React.Component {
                 });
             });
         }
+
+
+        let that = this;
+        // Fetch theatres
+        axios.get(apiBase+'/theatres').then((response) => {
+    
+            var newTheatres = response.data.theatres;
+            that.setState({theatres: newTheatres});
+
+            that.setClosestTheatre();
+
+        }).catch((error) => {
+            console.log(error);
+        });
     }
 
     handleTheatreChange(event){
@@ -77,9 +72,50 @@ class App extends React.Component {
         let that = this;
         axios.get(apiBase+'/theatres/'+event.target.value+'/shows').then((response) => {
             that.setState({shows: response.data.shows});
-            console.log(response.data.shows);
         });
     }
+
+    setClosestTheatre(){
+
+        var closestId = 0;
+        var minDistance = 360;
+        
+        var newTheatres = this.state.theatres.slice();
+
+        for (var i = newTheatres.length - 1; i >= 0; i--) {
+            newTheatres.isClosest = false;
+
+            if(newTheatres[i].location == null){
+                continue;
+            }
+
+            var x0 = this.state.location.latitude;
+            var x1 = newTheatres[i].location.lat;
+            var y0 = this.state.location.longitude;
+            var y1 = newTheatres[i].location.lng;
+
+            var dist = Math.sqrt((x0-x1)*(x0-x1) + (y0-y1)*(y0-y1));
+
+            if(dist < minDistance){
+                minDistance = dist;
+                closestId = i;
+            }
+        }
+        newTheatres[closestId].isClosest = true;
+
+        this.setState({theatres: newTheatres});
+
+        // trigger fake event to update shows
+        var fakeEvent = {
+            target: {
+                value: newTheatres[closestId].id
+            }
+        };
+        this.handleTheatreChange(fakeEvent);
+
+
+    }
+
 
     render() {
         return (
@@ -92,7 +128,7 @@ class App extends React.Component {
                         <option key="0" value="0">Select theatre...</option>
                         {this.state.theatres.map( function(theatre, i) {
                             return (
-                                <option key={theatre.id} value={theatre.id}>{theatre.city} - {theatre.name}</option>
+                                <option key={theatre.id} value={theatre.id} selected={theatre.isClosest == true}>{theatre.city} - {theatre.name}</option>
                             );
                         })}                
                     </select>

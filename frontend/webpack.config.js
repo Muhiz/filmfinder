@@ -12,6 +12,11 @@ module.exports = {
             query: {
               presets: ['es2015', 'react']
             }
-        }]
+        },
+        {
+            include: /\.json$/, loaders: ["json-loader"]
+        }
+
+        ]
     }
 };

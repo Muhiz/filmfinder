@@ -18,16 +18,16 @@ class ShowsList extends React.Component {
     render() {
 
         // Filter shows by searched keywords
-        // TODO: Search for genres etc.
 
         let filteredShows = this.props.shows.filter(
             (show) => {
-                return show.title.toLowerCase().indexOf( this.state.search.toLowerCase() ) >= 0;
+                return (show.title.toLowerCase().indexOf( this.state.search.toLowerCase() ) >= 0) || 
+                    (show.genre.toLowerCase().indexOf( this.state.search.toLowerCase() ) >= 0);
             }
         );
         return (
             <div>
-                <input type="text" placeholder="Filter name..." value={this.state.search} onChange={this._updateSearch.bind(this)} />
+                <input type="text" placeholder="Filter name or genre..." value={this.state.search} onChange={this._updateSearch.bind(this)} />
 
                 <div>
                     {filteredShows.map((show) => {
