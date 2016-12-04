@@ -8,7 +8,7 @@ const Show = ({show}) =>
         <h3>{show.title}</h3>
     </div>
     <div className="show-poster-container">
-        <img className="show-poster" src="http://www.impawards.com/2010/posters/inception.jpg" />
+        <img className="show-poster" src="TODO" />
     </div>
     <div className="show-details">
         <div><i className="icon fa fa-clock-o"></i><span className="show-time">{moment(show.start_time, moment.ISO_8601).tz('Europe/Helsinki').calendar() }</span></div>
