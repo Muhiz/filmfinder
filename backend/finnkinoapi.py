@@ -54,6 +54,20 @@ def fetch_theatres(city=None):
     return theatres
 
 
+def fetch_event(event_id):
+    query = {'eventID': event_id}
+    response = requests.get("http://www.finnkino.fi/xml/Events/", params=query, timeout=1.000)
+    root = ElementTree.fromstring(response.content)
+
+    description = ""
+
+    event = root[0]
+
+    description = event.find('Synopsis').text
+
+    return description
+
+
 def fetch_shows_in(theatre_id):
     query = {'area': theatre_id}  # , 'dt': date_arg}
     response = requests.get("http://www.finnkino.fi/xml/Schedule/", params=query, timeout=1.000)
@@ -66,10 +80,12 @@ def fetch_shows_in(theatre_id):
         show_id = int(show.find('EventID').text)
         original_title = show.find('OriginalTitle').text
         title = show.find('Title').text
+        description = fetch_event(show_id)
         genres = show.find('Genres').text
         startutc = show.find('dttmShowStartUTC').text
         length = int(show.find('LengthInMinutes').text)
         rating = fetch_movie_rating(original_title)
-        shows.append(Show(show_id, title, genres, "Lorem ipsum", length, startutc, rating))
+        poster_url = show.find('Images').find('EventMediumImagePortrait').text
+        shows.append(Show(show_id, title, genres, description, length, startutc, rating, poster_url))
 
     return shows

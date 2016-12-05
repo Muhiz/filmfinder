@@ -17,7 +17,7 @@ class Theatre:
 
 # Movie title, Genres, Description, Runtime, Show starts, IMDb rating
 class Show:
-    def __init__(self, show_id, title, genre, description, length, starttime, rating):
+    def __init__(self, show_id, title, genre, description, length, starttime, rating, poster_url):
         self.show_id = show_id
         self.title = title
         self.genre = genre
@@ -25,6 +25,7 @@ class Show:
         self.length = length
         self.starttime = starttime
         self.rating = rating
+        self.poster = poster_url
 
     def serialize(self):
         return {
@@ -34,5 +35,6 @@ class Show:
             'description': self.description,
             'runtime': self.length,
             'start_time': self.starttime,
-            'rating': self.rating
+            'rating': self.rating,
+            'poster_url': self.poster
         }
