@@ -18,9 +18,13 @@ def sanitize_movie_name(name):
 
 
 def split_movie_name(name):
+    print(name)
     names = name.split('-')
     if len(names) == 1:
+        print(names)
         names = name.split(':')
+        if len(names) == 1:
+            return name
         return names[1]
 
     return names[0]
