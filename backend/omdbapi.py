@@ -14,8 +14,16 @@ def sanitize_movie_name(name):
     if name.endswith('2D') or name.endswith('3D'):
         name = name[:-2].rstrip()
 
-    print(name)
     return name
+
+
+def split_movie_name(name):
+    names = name.split('-')
+    if len(names) == 1:
+        names = name.split(':')
+        return names[1]
+
+    return names[0]
 
 
 def query_movie_rating(name):
@@ -31,9 +39,7 @@ def fetch_movie_rating(name):
 
     if r['Response'] == 'False':
         # Try again by splitting extra part out
-        print('Not found')
-        r = query_movie_rating(name.split('-')[0])
-        print(name.split('-')[0])
+        r = query_movie_rating(split_movie_name(name))
 
     if 'imdbRating' in r:
         rating = r['imdbRating']
