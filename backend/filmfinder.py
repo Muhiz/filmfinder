@@ -2,11 +2,18 @@ import os
 from flask import Flask, request, jsonify, make_response
 from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
+from flask_sslify import SSLify
 from finnkinoapi import *
 
 app = Flask(__name__)
 api = Api(app)
 CORS(app)
+
+
+if 'DYNO' in os.environ:  # only trigger SSLify if the app is running on Heroku
+    app.debug = False
+    sslify = SSLify(app)
+
 
 ns = api.namespace('api', description='Filmfinder API')
 
