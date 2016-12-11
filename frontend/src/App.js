@@ -11,6 +11,16 @@ let apiBase = 'https://filmfinder-api.herokuapp.com/api';
 let theatres = [];
 let shows = [];
 
+let Loader = function(props){
+    if(!props.isReady){
+        return (<div className="loader"></div>);
+    }
+    else{
+        return (<div className="loader-ready"></div>);
+    }
+}
+
+
 
 class App extends React.Component {
 
@@ -67,8 +77,10 @@ class App extends React.Component {
     handleTheatreChange(event){
         
         this.setState({currentTheatre: event.target.value});
-        // Fetch shows
+        // Clear shows
+        this.setState({shows:[]});
 
+        // Fetch shows
         let that = this;
         axios.get(apiBase+'/theatres/'+event.target.value+'/shows').then((response) => {
             that.setState({shows: response.data.shows});
@@ -117,7 +129,9 @@ class App extends React.Component {
     }
 
 
+    
     render() {
+
         return (
             <div>
                 <div className="header">
@@ -133,9 +147,11 @@ class App extends React.Component {
                         })}                
                     </select>
                     <ShowsList shows={this.state.shows} />
+                    <Loader isReady={this.state.shows.length} />
                 </div>
             </div>
-        )
+        );
+        
     }
 }
 
