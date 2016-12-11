@@ -11,6 +11,31 @@
   * Mitä seuraavaksi:
     * Ohjelma ei vielä käytä backendin dataa. Seuraavaksi yhdistetään siihen.
 
+* Mikko
+  * Mitä tein:
+    * Asensin kehitysympäristön Pythonin Flaskia varten.
+    * Tutustuin Finnkinon ja OMDB:n API:in
+    * Suunnittelin yhdessä Matiaksen kanssa rajapintaa
+    
+  * Mitä opin:
+    * Python ja Flask olivat ennestään tuttuja mutta vaativat vähän asioiden palauttelua mieleen.
+  
+  * Mitä seuraavaksi:
+    * Finnkinon ja OMDB:n API:sta pitäisi saada dataa pihalle.
+    * Backend pitäisi laittaa jonnekin pyörimään
+    
+#Viikko 47:
+  * Mitä tein:
+    * Sain Pythonin hakemaan dataa Finnkinon XML -apista
+    * Asensin backendin Herokuun ja päivittymään automaattisesti
+    
+  * Mitä opin:
+    * En oikeastaan ollut käyttänyt Herokua aikaisemmin mutta sen käyttäminen oli yllättävän helppoa.
+    * Pythonissa on ihan kätevät XML-työkalut
+   
+  * Mitä seuraavaksi:
+    * Ulos saatava data pitäisi muotoilla hieman paremmin
+    * Lisää rajapintoja
 
 #Viikko 48:
 * Matias
@@ -23,6 +48,19 @@
   * Mitä seuraavaksi:
     * Viimeistellään ulkoasua ja lisätään uusia kenttiä elokuvista.
 
+* Mikko
+  * Mitä tein:
+    * Korjasin Matiaksen huomaamia bugeja rajapinnassa
+    * Parantelin rajapinnan tuottamaa dataa
+    
+  * Mitä opin:
+    * Tutkailin vaihtoehtoisia kirjastoja kuten Flask-Restful -kirjasto, Hug ja Connexion
+      * Connexion vaikutti kätevältä, jos toteuttaa rajapinnan ensin esim. Swagger-editorilla
+      * Hug ja Flask-Restful soveltuvat Swaggerin pulttaamiseen jälkikäteen
+  
+  * Mitä seuraavaksi:
+    * Swagger-ui
+    * Rajapinnan hiontaa
 
 #Viikko 49+50:
 * Matias
@@ -34,3 +72,17 @@
 
   * Mitä seuraavaksi:
     * Esitetään valmis työ.
+
+* Mikko
+  * Mitä tein:
+    * Otin Flask-Restful -kirjaston käyttöön Swagger-dokumentaation luomiseksi
+  
+  * Mitä opin:
+    * Migraatio Flaskista Flask-Resftuliin tapahtui yllättävän kivuttomasti
+    * Heroku tarjoaa SSL:n implisiittisesti
+  
+  * Mitä seuraavaksi:
+    * Esitetään valmis työ
+    * Ehkä pieni performance upgrade ennen demoa
+
+    
