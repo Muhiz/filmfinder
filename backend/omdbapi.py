@@ -26,20 +26,26 @@ def split_movie_name(name):
     return names[0]
 
 
-def query_movie_rating(name):
-    """Queries movie rating form OMDB API"""
+def make_query(name):
     query = {'t': name, 'y': 'plot', 'r': 'json'}
     return requests.get("http://www.omdbapi.com/", params=query).json()
 
 
-def fetch_movie_rating(name):
-    """Fetches movie rating from OMDB API"""
+def query_movie_rating(name):
+    """Queries movie rating form OMDB API"""
     name = sanitize_movie_name(name)
-    r = query_movie_rating(name)
 
+    r = make_query(name)
     if r['Response'] == 'False':
         # Try again by splitting extra part out
-        r = query_movie_rating(split_movie_name(name))
+        r = make_query(split_movie_name(name))
+
+    return r
+
+
+def fetch_movie_rating(name):
+    """Fetches movie rating from OMDB API"""
+    r = query_movie_rating(name)
 
     if 'imdbRating' in r:
         rating = r['imdbRating']

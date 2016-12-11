@@ -1,20 +1,22 @@
 import os
 from flask import Flask, request, jsonify, make_response
+from flask_restplus import Resource, Api, fields
 from flask_cors import CORS
 from finnkinoapi import *
 
 app = Flask(__name__)
+api = Api(app)
 CORS(app)
 
+ns = api.namespace('api', description='Filmfinder API')
 
-@app.route('/api/cities', methods=['GET'])
+
 def get_cities():
     cities = fetch_cities()
 
     return jsonify({'cities': cities})
 
 
-@app.route('/api/cities/<string:city>/theatres', methods=['GET'])
 def get_theatres_in(city):
     cities = fetch_cities()
     if city in cities:
@@ -23,7 +25,6 @@ def get_theatres_in(city):
     return jsonify(None)
 
 
-@app.route('/api/cities/<string:city>/shows', methods=['GET'])
 def get_shows_in(city):
     cities = fetch_cities()
     if city in cities:
@@ -32,16 +33,12 @@ def get_shows_in(city):
     return jsonify(None)
 
 
-# returns Theatre -list.
-@app.route('/api/theatres', methods=['GET'])
 def get_theatres():
     theatres = fetch_theatres()
 
     return jsonify({'theatres': [t.serialize() for t in theatres]})
 
 
-# Movie title, Genres, Description, Runtime, Show starts, IMDb rating
-@app.route('/api/theatres/<int:theatre_id>/shows', methods=['GET'])
 def get_shows(theatre_id):
     # date_arg = request.args['date']
     shows = fetch_shows_in(theatre_id)
@@ -49,24 +46,91 @@ def get_shows(theatre_id):
     return jsonify({'shows': [s.serialize() for s in shows]})
 
 
-# Movie title, Genres, Description, Runtime, Show starts, IMDb rating, Free seats
-@app.route('/api/theatres/<int:theatre_id>/shows/<int:show_id>', methods=['GET'])
 def get_show_in(theatre_id, show_id):
     query = {'t': 'Luokkakokous 2', 'y': 'plot', 'r': 'json'}
     r = requests.get("http://www.omdbapi.com/", params=query)
     return r.text
 
 
-@app.route('/api/theatres/shows/<int:show_id>', methods=['GET'])
 def get_show(show_id):
-    query = {'t': 'Luokkakokous 2', 'y': 'plot', 'r': 'json'}
-    r = requests.get("http://www.omdbapi.com/", params=query)
-    return r.text
+    pass
+
+
+@ns.route('/theatres/<int:theatre_id>/shows/<int:show_id>')
+@ns.response(404, 'Theatre or show not found')
+@ns.param('theatre_id', 'The theatre\'s ID')
+@ns.param('show_id', 'The show\'s ID')
+class ShowsInTheatre(Resource):
+    """Show/Movie in theatre"""
+    @staticmethod
+    def get(theatre_id, show_id):
+        return get_show_in(theatre_id, show_id)
+
+@ns.route('/cities')
+class CityList(Resource):
+    """Shows a list of all available cities"""
+    @staticmethod
+    def get():
+        return get_cities()
+
+
+@ns.route('/cities/<string:city>/theatres')
+@ns.response(404, 'City not found')
+@ns.param('city', 'The city\'s name')
+class TheatresInCityList(Resource):
+    """Shows a list of theatres in the city"""
+    @staticmethod
+    def get(city):
+        return get_theatres_in(city)
+
+
+@ns.route('/cities/<string:city>/shows')
+@ns.response(404, 'City not found')
+@ns.param('city', 'The city\'s name')
+class ShowsInCityList(Resource):
+    """Shows a list of shows in city theatres"""
+    @staticmethod
+    def get(city):
+        return get_shows_in(city)
+
+
+@ns.route('/theatres')
+class TheatresList(Resource):
+    """Shows a list of theatres"""
+    @staticmethod
+    def get():
+        return get_theatres()
 
 
 @app.errorhandler(404)
 def not_found(_):
     return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@ns.route('/theatres/<int:theatre_id>/shows')
+@ns.response(404, 'Theatre not found')
+@ns.param('theatre_id', 'The theatre\'s ID')
+class ShowsInTheatreList(Resource):
+    """Shows a list of theatres"""
+    @staticmethod
+    def get(theatre_id):
+        return get_shows(theatre_id)
+
+
+@ns.route('/theatres/shows/<int:show_id>', '/theatres/<int:theatre_id>/shows/<int:show_id>')
+@ns.response(404, 'Theatre or show not found')
+@ns.param('theatre_id', 'The theatre\'s ID')
+@ns.param('show_id', 'The show\'s ID')
+class Show(Resource):
+    """Show/Movie in theatre"""
+
+    @staticmethod
+    def get(theatre_id, show_id):
+        return get_show_in(theatre_id, show_id)
+
+    @staticmethod
+    def get(show_id):
+        return get_show(show_id)
 
 
 if __name__ == '__main__':
